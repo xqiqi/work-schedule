@@ -8,9 +8,9 @@ class Start extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 0, // current step when planning
-      shop: { id: '', name: '' },
-      startDate: ''
+      step: 0,                    // current step when planning
+      shop: { id: '', name: '' }, // current edit shop
+      startDate: ''               // schedule start date
     };
 
     this.save = this.save.bind(this);
@@ -34,8 +34,8 @@ class Start extends Component {
         <Select
           showSearch
           style={{ width: 200 }}
-          placeholder='请选择店铺'
-          optionFilterProp='children'
+          placeholder="请选择店铺"
+          optionFilterProp="children"
           onChange={this.handleShopSelect}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
@@ -75,7 +75,7 @@ class Start extends Component {
                 {steps.map(item => <Step key={item.title} title={item.title} />)}
               </Steps>
               <div>{steps[this.state.step].content}</div>
-              <div className="steps-action">
+              <div>
                 {
                   this.state.step < steps.length - 1
                   &&
@@ -96,7 +96,7 @@ class Start extends Component {
 
             <Col span={6} style={{ paddingLeft: 50 }}>
               <div style={{ background: '#efefef', borderRadius: 4, padding: 16 }}>
-                <h3 align='center' style={{ marginBottom: 8 }}>排班情况概览</h3>
+                <h3 align="center" style={{ marginBottom: 8 }}>排班情况概览</h3>
                 <p><b>已选店铺：</b>{this.state.shop.name}</p>
                 <p><b>开始日期：</b>{this.state.startDate}</p>
                 <p><b>人员周工作时间汇总：</b></p>
