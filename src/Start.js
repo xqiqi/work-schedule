@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import { Button, Col, Layout, Row, Select, Steps } from 'antd';
+import './Start.css';
+
+import low from 'lowdb';
+import LocalStorage from 'lowdb/adapters/LocalStorage';
+const adapter = new LocalStorage('schedule');
+const db = low(adapter);
 
 const { Content, Header } = Layout;
 const Step = Steps.Step;
+const Option = Select.Option;
 
 class Start extends Component {
   constructor(props) {
@@ -23,14 +30,20 @@ class Start extends Component {
   save() {}
   reset() {}
 
-  next() {}
-  prev() {}
+  next() {
+    const step = this.state.step + 1;
+    this.setState({ step });
+  }
+  prev() {
+    const step = this.state.step - 1;
+    this.setState({ step });
+  }
 
   handleShopSelect() {}
 
   render() {
     const sContentShop = (
-      <div>
+      <div className='stepContent'>
         <Select
           showSearch
           style={{ width: 200 }}
@@ -39,6 +52,7 @@ class Start extends Component {
           onChange={this.handleShopSelect}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
+          {db.get('shops').value().map((shop) => <Option key={shop.id} value={shop.name}>{shop.name}</Option>)}
         </Select>
         <p><b>店铺基本情况</b> [更改]</p>
       </div>
@@ -65,7 +79,7 @@ class Start extends Component {
       <Layout className="main">
         <Header style={{ background: '#fff', textAlign: 'right', padding: '0 16px', borderBottom: '1px solid #eee' }}>
           <Button type="primary" onClick={this.save}>保存</Button>
-          <Button type="default" onClick={this.reset} style={{ marginLeft: 16 }}>重置</Button>
+          <Button style={{ marginLeft: 16 }} onClick={this.reset}>重置</Button>
         </Header>
 
         <Content style={{ margin: '24px 16px' }}>
@@ -84,7 +98,7 @@ class Start extends Component {
                 {
                   this.state.step === steps.length - 1
                   &&
-                  <Button type="primary">生成班表</Button>
+                  <Button type="primary">保存并预览</Button>
                 }
                 {
                   this.state.step > 0

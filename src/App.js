@@ -3,6 +3,11 @@ import { Icon, Layout, Menu } from 'antd';
 import Start from './Start';
 import './App.css';
 
+import low from 'lowdb';
+import LocalStorage from 'lowdb/adapters/LocalStorage';
+const adapter = new LocalStorage('schedule');
+const db = low(adapter);
+
 const { Sider } = Layout;
 
 class App extends Component {
@@ -13,6 +18,15 @@ class App extends Component {
     };
 
     this.handleMenuClick = this.handleMenuClick.bind(this);
+
+    // init the database
+    db.defaults({
+      shops: [
+        { id: '433', name: '上海愚园路店' },
+        { id: '755', name: '上海淮海755店' },
+        { id: 'TRM', name: '上海世博源店' }
+      ]
+    }).write();
   }
 
   handleMenuClick(e) {
@@ -48,10 +62,10 @@ class App extends Component {
             </Menu>
           </Sider>
 
-          { this.state.menuKey === 'start' && <Start /> }
+          {this.state.menuKey === 'start' && <Start />}
 
-          { this.state.menuKey === 'chart' && <Layout className="main"><p>统计图表</p></Layout> }
-          { this.state.menuKey === 'history' && <Layout className="main"><p>历史记录</p></Layout> }
+          {this.state.menuKey === 'chart' && <Layout className="main"><p>统计图表</p></Layout>}
+          {this.state.menuKey === 'history' && <Layout className="main"><p>历史记录</p></Layout>}
         </Layout>
       </div>
     );
