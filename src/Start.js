@@ -3,6 +3,7 @@ import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
 import { Button, Col, DatePicker, Layout, Row, Select, Steps, message } from 'antd';
 import moment from 'moment';
+import DayPlan from './components/DayPlan';
 import WorkTime from './components/WorkTime';
 import './Start.css';
 
@@ -26,13 +27,13 @@ class Start extends Component {
       shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
       startDate: '',                                        // schedule start date
       workTime: {                                           // day work time
-        day1: { start: '', end: '' },
-        day2: { start: '', end: '' },
-        day3: { start: '', end: '' },
-        day4: { start: '', end: '' },
-        day5: { start: '', end: '' },
-        day6: { start: '', end: '' },
-        day7: { start: '', end: '' }
+        day1: {start: '', end: ''},
+        day2: {start: '', end: ''},
+        day3: {start: '', end: ''},
+        day4: {start: '', end: ''},
+        day5: {start: '', end: ''},
+        day6: {start: '', end: ''},
+        day7: {start: '', end: ''}
       }
     };
 
@@ -42,6 +43,7 @@ class Start extends Component {
     this.prev = this.prev.bind(this);
     this.handleShopSelect = this.handleShopSelect.bind(this);
     this.handleDatePick = this.handleDatePick.bind(this);
+    this.updateWorkTimeSum = this.updateWorkTimeSum.bind(this);
   }
 
   save() {}
@@ -118,6 +120,10 @@ class Start extends Component {
     this.setState({ startDate });
   }
 
+  updateWorkTimeSum(value) {
+    console.log(value);
+  }
+
   render() {
     const sContentShop = (
       <div className="stepContent">
@@ -150,16 +156,23 @@ class Start extends Component {
     const sContentTime = (
       <div className="stepContent">
         <Row gutter={16}>
-          {aWeek.map(i =>
-            <Col style={{ marginBottom: 16 }} key={i} span={8} md={6} xl={3}>
-              <WorkTime ref={'workTime' + i} start={this.state.workTime['day' + i].start} end={this.state.workTime['day' + i].end} />
-            </Col>
-          )}
+          {
+            aWeek.map(i =>
+              <Col style={{ marginBottom: 16 }} key={i} span={8} md={6} xl={3}>
+                <WorkTime ref={'workTime' + i} day={i} start={this.state.workTime['day' + i].start} end={this.state.workTime['day' + i].end} />
+              </Col>
+            )
+          }
         </Row>
       </div>
-    );;
+    );
     const sContentWork = (
       <div className="stepContent">
+        {
+          aWeek.map(i =>
+            <DayPlan key={i} day={i} shop={this.state.shop} workTime={this.state.workTime} updateWorkTimeSum={this.updateWorkTimeSum} />
+          )
+        }
       </div>
     );
 
@@ -221,7 +234,7 @@ class Start extends Component {
           </Row>
         </Content>
       </Layout>
-    )
+    );
   }
 }
 
