@@ -22,10 +22,14 @@ const hideMinutes = () => {
  * @param day
  * @param isStart
  */
-const getTimePickerProps = (day, isStart) => {
+const getTimePickerProps = (time, isStart) => {
+  let defaultValue = isStart ? moment('08:00', timeFormat) : moment('22:00', timeFormat);
+  if (time !== '') {
+    defaultValue = moment(time, timeFormat);
+  }
   return {
     format: timeFormat,
-    defaultValue: isStart ? moment('08:00', timeFormat) : moment('22:00', timeFormat),
+    defaultValue: defaultValue,
     disabledMinutes: hideMinutes,
     hideDisabledOptions: true
   };
@@ -58,10 +62,10 @@ class WorkTime extends Component {
       <div>
         <h3 style={{ margin: '8px 0' }}>DAY{this.props.day}</h3>
         <p style={{ marginBottom: 8 }}>
-          开始: <TimePicker {...getTimePickerProps(this.props.day, true)} onChange={this.handleStartChange} />
+          开始: <TimePicker {...getTimePickerProps(this.props.start, true)} onChange={this.handleStartChange} />
         </p>
         <p>
-          结束: <TimePicker {...getTimePickerProps(this.props.day, false)} onChange={this.handleEndChange} />
+          结束: <TimePicker {...getTimePickerProps(this.props.end, false)} onChange={this.handleEndChange} />
         </p>
       </div>
     );

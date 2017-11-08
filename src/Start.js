@@ -25,7 +25,15 @@ class Start extends Component {
       step: 0,                                              // current step when planning
       shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
       startDate: '',                                        // schedule start date
-      workTime: {}                                          // day work time
+      workTime: {                                           // day work time
+        day1: { start: '', end: '' },
+        day2: { start: '', end: '' },
+        day3: { start: '', end: '' },
+        day4: { start: '', end: '' },
+        day5: { start: '', end: '' },
+        day6: { start: '', end: '' },
+        day7: { start: '', end: '' }
+      }
     };
 
     this.save = this.save.bind(this);
@@ -62,7 +70,7 @@ class Start extends Component {
       case 2:
         let workTime = {};
         aWeek.forEach(i => {
-          workTime[i] = {
+          workTime['day' + i] = {
             start: this.refs['workTime' + i].state.start,
             end: this.refs['workTime' + i].state.end
           };
@@ -142,11 +150,18 @@ class Start extends Component {
     const sContentTime = (
       <div className="stepContent">
         <Row gutter={16}>
-          {aWeek.map(i => <Col style={{ marginBottom: 16 }} key={i} span={8} md={6} xl={3}><WorkTime ref={'workTime' + i} day={i} /></Col>)}
+          {aWeek.map(i =>
+            <Col style={{ marginBottom: 16 }} key={i} span={8} md={6} xl={3}>
+              <WorkTime ref={'workTime' + i} start={this.state.workTime['day' + i].start} end={this.state.workTime['day' + i].end} />
+            </Col>
+          )}
         </Row>
       </div>
     );;
-    const sContentWork = <h1>4</h1>;
+    const sContentWork = (
+      <div className="stepContent">
+      </div>
+    );
 
     const steps = [{
       title: '选择店铺',
