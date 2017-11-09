@@ -45,12 +45,7 @@ class DayPlan extends Component {
     const details = this.state.details.slice();
     details.push(detail);
     this.setState({ details });
-
-    // pass the details to the parent
-    this.props.updateDayDetails({
-      day: this.props.day,
-      details: details
-    });
+    this._updateDayDetails(details);
   }
 
   /**
@@ -61,11 +56,7 @@ class DayPlan extends Component {
     const details = this.state.details.slice();
     details.splice(index, 1);
     this.setState({ details });
-
-    this.props.updateDayDetails({
-      day: this.props.day,
-      details: details
-    });
+    this._updateDayDetails(details);
   }
 
   /**
@@ -76,7 +67,15 @@ class DayPlan extends Component {
     const details = this.state.details.slice();
     details[value.index] = value.detail;
     this.setState({ details });
+    this._updateDayDetails(details);
+  }
 
+  /**
+   * pass the day details to the parent
+   * @param details
+   * @private
+   */
+  _updateDayDetails(details) {
     this.props.updateDayDetails({
       day: this.props.day,
       details: details

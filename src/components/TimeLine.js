@@ -16,6 +16,23 @@ const getWorkTimeRange = (start, end) => {
   return (moment(end, timeFormat) - moment(start, timeFormat))/1000/60/30;
 };
 
+/**
+ * get the slider marks
+ * @param start
+ * @param end
+ * @param pStart
+ * @param pEnd
+ * @returns {object}
+ */
+const getSliderMarks = (start, end, pStart, pEnd) => {
+  const marks = {};
+  marks[0] = start;
+  marks[getWorkTimeRange(start, end)] = end;
+  marks[getWorkTimeRange(start, pStart)] = pStart;
+  marks[getWorkTimeRange(start, pEnd)] = pEnd;
+  return marks;
+};
+
 class TimeLine extends Component {
   constructor(props) {
     super(props);
@@ -23,16 +40,9 @@ class TimeLine extends Component {
     this.index = this.props.index;
     this.start = this.props.slider.start;
     this.end = this.props.slider.end;
-    this.sliderMax = getWorkTimeRange(this.start, this.end);
-
-    const marks = {};
-    marks[0] = this.start;
-    marks[this.sliderMax] = this.end;
-    marks[getWorkTimeRange(this.start, this.props.detail.start)] = this.props.detail.start;
-    marks[getWorkTimeRange(this.start, this.props.detail.end)] = this.props.detail.end;
 
     this.state = {
-      marks: marks,
+      marks: getSliderMarks(this.start, this.end, this.props.detail.start, this.props.detail.end),
       detail: {
         employee: this.props.detail.employee,
         start: this.props.detail.start,
@@ -43,19 +53,17 @@ class TimeLine extends Component {
     this.handleEmployeeSelect = this.handleEmployeeSelect.bind(this);
     this.sliderTipFormatter = this.sliderTipFormatter.bind(this);
     this.handleSliderChange = this.handleSliderChange.bind(this);
+    this.handleSliderAfterChange = this.handleSliderAfterChange.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
   }
 
+  /**
+   * when the props changes, change this.state to rerender the slider
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps) {
     if(JSON.stringify(this.props.detail) !== JSON.stringify(nextProps.detail)) {
-      const marks = {};
-      marks[0] = this.start;
-      marks[this.sliderMax] = this.end;
-      marks[getWorkTimeRange(this.start, nextProps.detail.start)] = nextProps.detail.start;
-      marks[getWorkTimeRange(this.start, nextProps.detail.end)] = nextProps.detail.end;
-
       this.setState({
-        marks: marks,
         detail: {
           employee: nextProps.detail.employee,
           start: nextProps.detail.start,
@@ -63,7 +71,8 @@ class TimeLine extends Component {
         }
       });
 
-      console.log(this.refs.slider);
+      const marks = getSliderMarks(this.start, this.end, nextProps.detail.start, nextProps.detail.end);
+      this.setState({ marks });
     }
   }
 
@@ -93,10 +102,21 @@ class TimeLine extends Component {
   }
 
   /**
-   * after the slider change
+   * when the slider change
    * @param value
    */
   handleSliderChange(value) {
+    const detail = this.state.detail;
+    detail.start = this.sliderTipFormatter(value[0]);
+    detail.end = this.sliderTipFormatter(value[1]);
+    this.setState({ detail });
+  }
+
+  /**
+   * after the slider change
+   * @param value
+   */
+  handleSliderAfterChange(value) {
     const pStart = this.sliderTipFormatter(value[0]);
     const pEnd = this.sliderTipFormatter(value[1]);
 
@@ -105,11 +125,7 @@ class TimeLine extends Component {
     detail.end = pEnd;
     this.setState({ detail });
 
-    const marks = {};
-    marks[0] = this.start;
-    marks[this.sliderMax] = this.end;
-    marks[value[0]] = pStart;
-    marks[value[1]] = pEnd;
+    const marks = getSliderMarks(this.start, this.end, pStart, pEnd);
     this.setState({ marks });
 
     this.props.update({
@@ -129,21 +145,25 @@ class TimeLine extends Component {
     return (
       <Row type="flex" align="middle">
         <Col span={6}>
-          <Select value={this.state.detail.employee} style={{ width: 120 }} onChange={this.handleEmployeeSelect}>
+          <Select
+            style={{ width: 120 }}
+            value={this.state.detail.employee}
+            onChange={this.handleEmployeeSelect}
+          >
             {this.props.employees.map(employee => <Option key={employee.id}>{employee.name}</Option>)}
           </Select>
         </Col>
         <Col span={16}>
           <Slider
-            ref="slider"
             range
             step={1}
             min={0}
-            max={this.sliderMax}
+            max={getWorkTimeRange(this.start, this.end)}
             marks={this.state.marks}
-            initialValue={[getWorkTimeRange(this.start, this.state.detail.start), getWorkTimeRange(this.start, this.state.detail.end)]}
+            value={[getWorkTimeRange(this.start, this.state.detail.start), getWorkTimeRange(this.start, this.state.detail.end)]}
             tipFormatter={this.sliderTipFormatter}
-            onAfterChange={this.handleSliderChange}
+            onChange={this.handleSliderChange}
+            onAfterChange={this.handleSliderAfterChange}
           />
         </Col>
         <Col span={2} style={{ textAlign: 'right' }}>
