@@ -24,17 +24,39 @@ class Start extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 0,                                              // current step when planning
-      shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
-      startDate: '',                                        // schedule start date
+      step: 3,                                              // current step when planning
+      shop: {
+        id: '3',
+        name: '上海世博源店',
+        employees: [
+          { id: '1', name: 'aa', title: 2 },
+          { id: '2', name: 'bb', title: 1 },
+          { id: '3', name: 'cc', title: 1 },
+          { id: '4', name: 'dd', title: 0 }
+        ],
+        plans: [
+          { id: '1', name: '早咖啡师', start: '8:00', end: '16:30' },
+          { id: '2', name: '晚咖啡师', start: '13:30', end: '22:00' }
+        ]
+      }, // current edit shop
+      startDate: '2017/11/13',                                        // schedule start date
       workTime: {                                           // day work time
-        day1: {start: '', end: ''},
-        day2: {start: '', end: ''},
-        day3: {start: '', end: ''},
-        day4: {start: '', end: ''},
-        day5: {start: '', end: ''},
-        day6: {start: '', end: ''},
-        day7: {start: '', end: ''}
+        day1: {start: '8:00', end: '22:00'},
+        day2: {start: '8:00', end: '22:00'},
+        day3: {start: '8:00', end: '22:00'},
+        day4: {start: '8:00', end: '22:00'},
+        day5: {start: '8:00', end: '22:00'},
+        day6: {start: '9:00', end: '22:00'},
+        day7: {start: '9:00', end: '22:00'}
+      },
+      details: {
+        day1: [],
+        day2: [],
+        day3: [],
+        day4: [],
+        day5: [],
+        day6: [],
+        day7: []
       }
     };
 
@@ -44,7 +66,7 @@ class Start extends Component {
     this.prev = this.prev.bind(this);
     this.handleShopSelect = this.handleShopSelect.bind(this);
     this.handleDatePick = this.handleDatePick.bind(this);
-    this.updateWorkTimeSum = this.updateWorkTimeSum.bind(this);
+    this.updateDayDetails = this.updateDayDetails.bind(this);
   }
 
   save() {}
@@ -56,7 +78,7 @@ class Start extends Component {
   next() {
     const step = this.state.step + 1;
 
-    // check if it can trun to the next step
+    // check if it can turn to the next step
     switch (step - 1) {
       case 0:
         if (this.state.shop.id === '') {
@@ -118,15 +140,22 @@ class Start extends Component {
 
   /**
    * when the week start date picker changes
-   * @param moment
+   * @param date
+   * @param dateStr
    */
   handleDatePick(date, dateStr) {
     const startDate = dateStr;
     this.setState({ startDate });
   }
 
-  updateWorkTimeSum(value) {
-    console.log(value);
+  /**
+   * get the details from the child and update this.state.details
+   * @param value
+   */
+  updateDayDetails(value) {
+    const details = this.state.details;
+    details['day' + value.day] = value.details;
+    this.setState({ details });
   }
 
   render() {
@@ -175,7 +204,7 @@ class Start extends Component {
       <div className="stepContent">
         {
           aWeek.map(i =>
-            <DayPlan key={i} day={i} shop={this.state.shop} workTime={this.state.workTime} updateWorkTimeSum={this.updateWorkTimeSum} />
+            <DayPlan key={i} day={i} shop={this.state.shop} workTime={this.state.workTime} updateDayDetails={this.updateDayDetails} />
           )
         }
       </div>
