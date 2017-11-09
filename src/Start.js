@@ -18,7 +18,18 @@ message.config({ top: 130, duration: 2 });
 
 moment.locale('zh-cn');
 const dateFormat = 'YYYY/MM/DD';
+const timeFormat = 'HH:mm';
 const aWeek = [1,2,3,4,5,6,7];
+
+/**
+ * get work hours
+ * @param start
+ * @param end
+ * @returns {number}
+ */
+const getHours = (start, end) => {
+  return (moment(end, timeFormat) - moment(start, timeFormat))/1000/60/60;
+};
 
 class Start extends Component {
   constructor(props) {
@@ -57,7 +68,13 @@ class Start extends Component {
         day5: [],
         day6: [],
         day7: []
-      }
+      },
+      sums: [
+        { employee: '1', total: 0 },
+        { employee: '2', total: 0 },
+        { employee: '3', total: 0 },
+        { employee: '4', total: 0 }
+      ]
     };
 
     this.save = this.save.bind(this);
@@ -156,6 +173,17 @@ class Start extends Component {
     const details = this.state.details;
     details['day' + value.day] = value.details;
     this.setState({ details });
+
+    // update the sums
+    const sums = this.state.sums.slice();
+    sums.forEach(sum => sum.total = 0);
+    aWeek.forEach(i => {
+      const dayDetails = details['day' + i];
+      dayDetails.forEach(detail => {
+        sums.find(sum => sum.employee === detail.employee).total += getHours(detail.start, detail.end);
+      });
+    });
+    this.setState({ sums });
   }
 
   render() {
@@ -204,7 +232,13 @@ class Start extends Component {
       <div className="stepContent">
         {
           aWeek.map(i =>
-            <DayPlan key={i} day={i} shop={this.state.shop} workTime={this.state.workTime} updateDayDetails={this.updateDayDetails} />
+            <DayPlan
+              key={i}
+              day={i}
+              shop={this.state.shop}
+              workTime={this.state.workTime}
+              updateDayDetails={this.updateDayDetails}
+            />
           )
         }
       </div>
@@ -262,7 +296,14 @@ class Start extends Component {
                 <h3 align="center" style={{ marginBottom: 8 }}>排班情况概览</h3>
                 <p><b>已选店铺: </b>{this.state.shop.name}</p>
                 <p><b>开始日期: </b>{this.state.startDate}</p>
-                <p><b>人员周工作时间汇总: </b></p>
+                <p><b>人员周工作时间汇总(小时): </b></p>
+                {
+                  this.state.sums.map(sum =>
+                    <p style={{ paddingLeft: 8 }} key={sum.employee}>
+                      {this.state.shop.employees.find(employee => employee.id === sum.employee).name}: {sum.total}
+                    </p>
+                  )
+                }
               </div>
             </Col>
           </Row>
