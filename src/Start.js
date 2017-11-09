@@ -15,6 +15,7 @@ const Step = Steps.Step;
 const Option = Select.Option;
 
 message.config({ top: 130, duration: 2 });
+
 moment.locale('zh-cn');
 const dateFormat = 'YYYY/MM/DD';
 const aWeek = [1,2,3,4,5,6,7];
@@ -62,6 +63,10 @@ class Start extends Component {
           message.error('请选择店铺！');
           return;
         }
+        if (this.state.shop.employees.length === 0) {
+          message.error('没有可供配置的人员，请先进行店铺配置！');
+          return;
+        }
         break;
       case 1:
         if (this.state.startDate === '') {
@@ -70,7 +75,7 @@ class Start extends Component {
         }
         break;
       case 2:
-        let workTime = {};
+        const workTime = {};
         aWeek.forEach(i => {
           workTime['day' + i] = {
             start: this.refs['workTime' + i].state.start,

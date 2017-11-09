@@ -19,7 +19,7 @@ const hideMinutes = () => {
 };
 /**
  * get TimePicker properties
- * @param day
+ * @param time
  * @param isStart
  */
 const getTimePickerProps = (time, isStart) => {

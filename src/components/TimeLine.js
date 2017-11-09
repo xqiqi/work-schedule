@@ -23,15 +23,13 @@ class TimeLine extends Component {
     this.start = this.props.slider.start;
     this.end = this.props.slider.end;
     this.sliderMax = getWorkTimeRangeMax(this.start, this.end);
-    let marks = {};
+    const marks = {};
     marks[0] = this.start;
     marks[this.sliderMax] = this.end;
 
     this.state = {
       marks: marks
     };
-
-    console.log(this.props.index);
 
     this.sliderTipFormatter = this.sliderTipFormatter.bind(this);
     this.handleSliderChange = this.handleSliderChange.bind(this);
@@ -40,7 +38,7 @@ class TimeLine extends Component {
 
   /**
    * work time slider tip formatter
-   * @param v
+   * @param value
    * @returns {string}
    */
   sliderTipFormatter(value) {
@@ -53,7 +51,7 @@ class TimeLine extends Component {
    * @param value
    */
   handleSliderChange(value) {
-    let marks = {};
+    const marks = {};
     marks[0] = this.start;
     marks[this.sliderMax] = this.end;
     marks[value[0]] = this.sliderTipFormatter(value[0]);
@@ -62,7 +60,7 @@ class TimeLine extends Component {
   }
 
   /**
-   * when the delete button click, delete the selected time line
+   * when the delete button click, pass the selected index to the parent
    */
   handleDeleteClick(index) {
     this.props.delete(index);
