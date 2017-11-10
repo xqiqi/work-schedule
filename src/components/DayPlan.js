@@ -30,7 +30,8 @@ class DayPlan extends Component {
     const detail = {
       employee: this.props.shop.employees[0].id,
       start: this.slider.start,
-      end: this.slider.end
+      end: this.slider.end,
+      rest: 0.5
     };
 
     if (planId) {

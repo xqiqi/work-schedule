@@ -46,10 +46,12 @@ class TimeLine extends Component {
       detail: {
         employee: this.props.detail.employee,
         start: this.props.detail.start,
-        end: this.props.detail.end
+        end: this.props.detail.end,
+        rest: this.props.detail.rest
       }
     };
 
+    this.handleRestSelect = this.handleRestSelect.bind(this);
     this.handleEmployeeSelect = this.handleEmployeeSelect.bind(this);
     this.sliderTipFormatter = this.sliderTipFormatter.bind(this);
     this.handleSliderChange = this.handleSliderChange.bind(this);
@@ -67,7 +69,8 @@ class TimeLine extends Component {
         detail: {
           employee: nextProps.detail.employee,
           start: nextProps.detail.start,
-          end: nextProps.detail.end
+          end: nextProps.detail.end,
+          rest: nextProps.detail.rest
         }
       });
 
@@ -83,6 +86,21 @@ class TimeLine extends Component {
   handleEmployeeSelect(employeeId) {
     const detail = this.state.detail;
     detail.employee = employeeId;
+    this.setState({ detail });
+
+    this.props.update({
+      index: this.index,
+      detail: detail
+    });
+  }
+
+  /**
+   * when the rest time selector changes, pass the change to the parent
+   * @param rest
+   */
+  handleRestSelect(rest) {
+    const detail = this.state.detail;
+    detail.rest = parseFloat(rest);
     this.setState({ detail });
 
     this.props.update({
@@ -144,16 +162,27 @@ class TimeLine extends Component {
   render() {
     return (
       <Row type="flex" align="middle">
-        <Col span={6}>
+        <Col span={10}>
           <Select
-            style={{ width: 120 }}
+            style={{ width: 80 }}
             value={this.state.detail.employee}
             onChange={this.handleEmployeeSelect}
           >
             {this.props.employees.map(employee => <Option key={employee.id}>{employee.name}</Option>)}
           </Select>
+          <Select
+            style={{ width: 60, marginLeft: 4 }}
+            value={this.state.detail.rest ? this.state.detail.rest.toString() : '0.5'}
+            onChange={this.handleRestSelect}
+          >
+            <Option value="0">0h</Option>
+            <Option value="0.5">-0.5h</Option>
+            <Option value="1">-1h</Option>
+            <Option value="1.5">-1.5h</Option>
+            <Option value="2">-2h</Option>
+          </Select>
         </Col>
-        <Col span={16}>
+        <Col span={12}>
           <Slider
             range
             step={1}

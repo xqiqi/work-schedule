@@ -25,10 +25,11 @@ const aWeek = [1,2,3,4,5,6,7];
  * get work hours
  * @param start
  * @param end
+ * @param rest
  * @returns {number}
  */
-const getHours = (start, end) => {
-  return (moment(end, timeFormat) - moment(start, timeFormat))/1000/60/60;
+const getHours = (start, end, rest) => {
+  return (moment(end, timeFormat) - moment(start, timeFormat))/1000/60/60 - rest;
 };
 
 class Start extends Component {
@@ -180,7 +181,7 @@ class Start extends Component {
     aWeek.forEach(i => {
       const dayDetails = details['day' + i];
       dayDetails.forEach(detail => {
-        sums.find(sum => sum.employee === detail.employee).total += getHours(detail.start, detail.end);
+        sums.find(sum => sum.employee === detail.employee).total += getHours(detail.start, detail.end, detail.rest);
       });
     });
     this.setState({ sums });
