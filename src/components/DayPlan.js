@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { Button, Col, Row } from 'antd';
-import moment from 'moment';
+import Button from 'antd/lib/button';
+import Col from 'antd/lib/col';
+import Row from 'antd/lib/row';
 import TimeLine from './TimeLine';
-
-const timeFormat = 'HH:mm';
+import TimeUtil from '../utils/timeUtil';
 
 class DayPlan extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      details: []
+      details: this.props.details
     };
 
     this.slider = {
@@ -39,8 +39,8 @@ class DayPlan extends Component {
       const pStart = plan.start;
       const pEnd = plan.end;
 
-      if (moment(pStart, timeFormat) > moment(detail.start, timeFormat)) detail.start = pStart;
-      if (moment(pEnd, timeFormat) < moment(detail.end, timeFormat)) detail.end = pEnd;
+      if (TimeUtil.isTimeLater(pStart, detail.start)) detail.start = pStart;
+      if (!TimeUtil.isTimeLater(pEnd, detail.end)) detail.end = pEnd;
     }
 
     const details = this.state.details.slice();
@@ -91,10 +91,24 @@ class DayPlan extends Component {
           <Col span={24} lg={4} style={{ marginBottom: 4 }}>
             {
               this.props.shop.plans.map(plan =>
-                <Button style={{ margin: '0 4px 4px 0' }} size="small" key={plan.id} onClick={() => this.handleAddClick(plan.id)}>{plan.name}</Button>
+                <Button
+                  style={{ margin: '0 4px 4px 0' }}
+                  size="small"
+                  key={plan.id}
+                  onClick={() => this.handleAddClick(plan.id)}
+                >
+                  {plan.name}
+                </Button>
               )
             }
-            <Button style={{ margin: '0 4px 4px 0' }} type="primary" size="small" shape="circle" icon="plus" onClick={() => this.handleAddClick()} />
+            <Button
+              style={{ margin: '0 4px 4px 0' }}
+              type="primary"
+              size="small"
+              shape="circle"
+              icon="plus"
+              onClick={() => this.handleAddClick()}
+            />
           </Col>
           <Col span={24} lg={20} style={{ marginBottom: 4 }}>
             {

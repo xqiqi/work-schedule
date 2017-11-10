@@ -1,37 +1,25 @@
 import React, { Component } from 'react';
-import { Button, Col, Row, Select, Slider } from 'antd';
-import moment from 'moment';
+import Button from 'antd/lib/button';
+import Col from 'antd/lib/col';
+import Row from 'antd/lib/row';
+import Select from 'antd/lib/select';
+import Slider from 'antd/lib/slider';
+import TimeUtil from '../utils/timeUtil';
 
 const Option = Select.Option;
-
-const timeFormat = 'HH:mm';
-
-/**
- * get the range max number according to the day work time start - end
- * @param start
- * @param end
- * @returns {number}
- */
-const getWorkTimeRange = (start, end) => {
-  return (moment(end, timeFormat) - moment(start, timeFormat))/1000/60/30;
-};
 
 /**
  * get the slider marks
  * @param start
- * @param end
- * @param pStart
- * @param pEnd
+ * @param tag array contains all the mark tags excluding start
  * @returns {object}
  */
-const getSliderMarks = (start, end, pStart, pEnd) => {
+function getSliderMarks (start, ...tags) {
   const marks = {};
   marks[0] = start;
-  marks[getWorkTimeRange(start, end)] = end;
-  marks[getWorkTimeRange(start, pStart)] = pStart;
-  marks[getWorkTimeRange(start, pEnd)] = pEnd;
+  tags.forEach(tag => marks[TimeUtil.getHalfHours(start, tag)] = tag);
   return marks;
-};
+}
 
 class TimeLine extends Component {
   constructor(props) {
@@ -66,6 +54,7 @@ class TimeLine extends Component {
   componentWillReceiveProps(nextProps) {
     if(JSON.stringify(this.props.detail) !== JSON.stringify(nextProps.detail)) {
       this.setState({
+        marks: getSliderMarks(this.start, this.end, nextProps.detail.start, nextProps.detail.end),
         detail: {
           employee: nextProps.detail.employee,
           start: nextProps.detail.start,
@@ -73,40 +62,41 @@ class TimeLine extends Component {
           rest: nextProps.detail.rest
         }
       });
-
-      const marks = getSliderMarks(this.start, this.end, nextProps.detail.start, nextProps.detail.end);
-      this.setState({ marks });
     }
   }
 
   /**
-   * when the employee selector changes, pass the change to the parent
+   * update the detail change to the parent
+   * @param detail
+   * @private
+   */
+  _updateDetail(detail) {
+    this.props.update({
+      index: this.index,
+      detail: detail
+    });
+  }
+
+  /**
+   * when the employee selector changes
    * @param employeeId
    */
   handleEmployeeSelect(employeeId) {
     const detail = this.state.detail;
     detail.employee = employeeId;
     this.setState({ detail });
-
-    this.props.update({
-      index: this.index,
-      detail: detail
-    });
+    this._updateDetail(detail);
   }
 
   /**
-   * when the rest time selector changes, pass the change to the parent
+   * when the rest time selector changes
    * @param rest
    */
   handleRestSelect(rest) {
     const detail = this.state.detail;
     detail.rest = parseFloat(rest);
     this.setState({ detail });
-
-    this.props.update({
-      index: this.index,
-      detail: detail
-    });
+    this._updateDetail(detail);
   }
 
   /**
@@ -115,8 +105,8 @@ class TimeLine extends Component {
    * @returns {string}
    */
   sliderTipFormatter(value) {
-    const mins = moment(this.start, timeFormat).add(value*30*60*1000);
-    return moment(mins, timeFormat).format(timeFormat);
+    const m = TimeUtil.parseTimeStrToMoment(this.start).add(value * 30 * 60 * 1000);
+    return m.format(TimeUtil.timeFormat);
   }
 
   /**
@@ -146,10 +136,7 @@ class TimeLine extends Component {
     const marks = getSliderMarks(this.start, this.end, pStart, pEnd);
     this.setState({ marks });
 
-    this.props.update({
-      index: this.index,
-      detail: detail
-    });
+    this._updateDetail(detail);
   }
 
   /**
@@ -162,7 +149,7 @@ class TimeLine extends Component {
   render() {
     return (
       <Row type="flex" align="middle">
-        <Col span={10}>
+        <Col span={8}>
           <Select
             style={{ width: 80 }}
             value={this.state.detail.employee}
@@ -172,7 +159,7 @@ class TimeLine extends Component {
           </Select>
           <Select
             style={{ width: 60, marginLeft: 4 }}
-            value={this.state.detail.rest ? this.state.detail.rest.toString() : '0.5'}
+            value={this.state.detail.rest !== undefined ? this.state.detail.rest.toString() : '0.5'}
             onChange={this.handleRestSelect}
           >
             <Option value="0">0h</Option>
@@ -182,14 +169,14 @@ class TimeLine extends Component {
             <Option value="2">-2h</Option>
           </Select>
         </Col>
-        <Col span={12}>
+        <Col span={14}>
           <Slider
             range
             step={1}
             min={0}
-            max={getWorkTimeRange(this.start, this.end)}
+            max={TimeUtil.getHalfHours(this.start, this.end)}
             marks={this.state.marks}
-            value={[getWorkTimeRange(this.start, this.state.detail.start), getWorkTimeRange(this.start, this.state.detail.end)]}
+            value={[TimeUtil.getHalfHours(this.start, this.state.detail.start), TimeUtil.getHalfHours(this.start, this.state.detail.end)]}
             tipFormatter={this.sliderTipFormatter}
             onChange={this.handleSliderChange}
             onAfterChange={this.handleSliderAfterChange}

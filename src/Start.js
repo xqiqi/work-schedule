@@ -1,10 +1,17 @@
 import low from 'lowdb';
 import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
-import { Button, Col, DatePicker, Layout, Row, Select, Steps, message } from 'antd';
-import moment from 'moment';
+import Button from 'antd/lib/button';
+import Col from 'antd/lib/col';
+import DatePicker from 'antd/lib/date-picker';
+import Layout from 'antd/lib/layout';
+import Row from 'antd/lib/row';
+import Select from 'antd/lib/select';
+import Steps from 'antd/lib/steps';
+import message from 'antd/lib/message';
 import DayPlan from './components/DayPlan';
 import WorkTime from './components/WorkTime';
+import TimeUtil from './utils/timeUtil';
 import './Start.css';
 
 const adapter = new LocalStorage('schedule');
@@ -13,24 +20,9 @@ const db = low(adapter);
 const { Content, Header } = Layout;
 const Step = Steps.Step;
 const Option = Select.Option;
-
-message.config({ top: 130, duration: 2 });
-
-moment.locale('zh-cn');
-const dateFormat = 'YYYY/MM/DD';
-const timeFormat = 'HH:mm';
 const aWeek = [1,2,3,4,5,6,7];
 
-/**
- * get work hours
- * @param start
- * @param end
- * @param rest
- * @returns {number}
- */
-const getHours = (start, end, rest) => {
-  return (moment(end, timeFormat) - moment(start, timeFormat))/1000/60/60 - rest;
-};
+message.config({ top: 130, duration: 2 });
 
 class Start extends Component {
   constructor(props) {
@@ -53,13 +45,13 @@ class Start extends Component {
       }, // current edit shop
       startDate: '2017/11/13',                                        // schedule start date
       workTime: {                                           // day work time
-        day1: {start: '8:00', end: '22:00'},
-        day2: {start: '8:00', end: '22:00'},
-        day3: {start: '8:00', end: '22:00'},
-        day4: {start: '8:00', end: '22:00'},
-        day5: {start: '8:00', end: '22:00'},
-        day6: {start: '9:00', end: '22:00'},
-        day7: {start: '9:00', end: '22:00'}
+        day1: {start: '08:00', end: '22:00'},
+        day2: {start: '08:00', end: '22:00'},
+        day3: {start: '08:00', end: '22:00'},
+        day4: {start: '08:00', end: '22:00'},
+        day5: {start: '08:00', end: '22:00'},
+        day6: {start: '09:00', end: '22:00'},
+        day7: {start: '09:00', end: '22:00'}
       },
       details: {
         day1: [],
@@ -181,7 +173,7 @@ class Start extends Component {
     aWeek.forEach(i => {
       const dayDetails = details['day' + i];
       dayDetails.forEach(detail => {
-        sums.find(sum => sum.employee === detail.employee).total += getHours(detail.start, detail.end, detail.rest);
+        sums.find(sum => sum.employee === detail.employee).total += (TimeUtil.getHours(detail.start, detail.end) - detail.rest);
       });
     });
     this.setState({ sums });
@@ -210,9 +202,9 @@ class Start extends Component {
       <div className="stepContent">
         <DatePicker
           style={{ width: 200 }}
-          format={dateFormat}
+          format={TimeUtil.dateFormat}
           onChange={this.handleDatePick}
-          {...this.state.startDate !== '' && {defaultValue: moment(this.state.startDate, dateFormat)}}
+          {...this.state.startDate !== '' && {defaultValue: TimeUtil.parseDateStrToMoment(this.state.startDate)}}
         />
       </div>
     );
@@ -222,7 +214,12 @@ class Start extends Component {
           {
             aWeek.map(i =>
               <Col style={{ marginBottom: 16 }} key={i} span={8} md={6} xl={3}>
-                <WorkTime ref={'workTime' + i} day={i} start={this.state.workTime['day' + i].start} end={this.state.workTime['day' + i].end} />
+                <WorkTime
+                  ref={'workTime' + i}
+                  day={i}
+                  start={this.state.workTime['day' + i].start}
+                  end={this.state.workTime['day' + i].end}
+                />
               </Col>
             )
           }
@@ -238,6 +235,7 @@ class Start extends Component {
               day={i}
               shop={this.state.shop}
               workTime={this.state.workTime}
+              details={this.state.details['day' + i]}
               updateDayDetails={this.updateDayDetails}
             />
           )
