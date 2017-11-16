@@ -28,32 +28,19 @@ class Start extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 3,                                              // current step when planning
-      shop: {
-        id: '3',
-        name: '上海世博源店',
-        employees: [
-          { id: '1', name: 'aa', title: 2 },
-          { id: '2', name: 'bb', title: 1 },
-          { id: '3', name: 'cc', title: 1 },
-          { id: '4', name: 'dd', title: 0 }
-        ],
-        plans: [
-          { id: '1', name: '早咖啡师', start: '8:00', end: '16:30' },
-          { id: '2', name: '晚咖啡师', start: '13:30', end: '22:00' }
-        ]
-      }, // current edit shop
-      startDate: '2017/11/13',                                        // schedule start date
+      step: 0,                                              // current step when planning
+      shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
+      startDate: '',                                        // schedule start date
       workTime: {                                           // day work time
         day1: {start: '08:00', end: '22:00'},
         day2: {start: '08:00', end: '22:00'},
         day3: {start: '08:00', end: '22:00'},
         day4: {start: '08:00', end: '22:00'},
         day5: {start: '08:00', end: '22:00'},
-        day6: {start: '09:00', end: '22:00'},
-        day7: {start: '09:00', end: '22:00'}
+        day6: {start: '08:00', end: '22:00'},
+        day7: {start: '08:00', end: '22:00'}
       },
-      details: {
+      details: {                                            // day schedule detail
         day1: [],
         day2: [],
         day3: [],
@@ -62,12 +49,7 @@ class Start extends Component {
         day6: [],
         day7: []
       },
-      sums: [
-        { employee: '1', total: 0 },
-        { employee: '2', total: 0 },
-        { employee: '3', total: 0 },
-        { employee: '4', total: 0 }
-      ]
+      sums: []                                              // total working time
     };
 
     this.save = this.save.bind(this);
@@ -146,6 +128,15 @@ class Start extends Component {
         plans: preSet.plans
       }
     });
+
+    const sums = this.state.sums;
+    preSet.employees.forEach(employee => {
+      sums.push({
+        employee: employee.id,
+        total: 0
+      })
+    });
+    this.setState({ sums });
   }
 
   /**
@@ -297,6 +288,8 @@ class Start extends Component {
                 <p><b>开始日期: </b>{this.state.startDate}</p>
                 <p><b>人员周工作时间汇总(小时): </b></p>
                 {
+                  this.state.sums !== []
+                  &&
                   this.state.sums.map(sum =>
                     <p style={{ paddingLeft: 8 }} key={sum.employee}>
                       {this.state.shop.employees.find(employee => employee.id === sum.employee).name}: {sum.total}
