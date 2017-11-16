@@ -31,7 +31,8 @@ class DayPlan extends Component {
       employee: this.props.shop.employees[0].id,
       start: this.slider.start,
       end: this.slider.end,
-      rest: 0.5
+      rest: 0.5,
+      isSupport: false
     };
 
     if (planId) {

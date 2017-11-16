@@ -3,8 +3,10 @@ import Button from 'antd/lib/button';
 import Col from 'antd/lib/col';
 import Row from 'antd/lib/row';
 import Select from 'antd/lib/select';
+import Switch from 'antd/lib/switch';
 import Slider from 'antd/lib/slider';
 import TimeUtil from '../utils/timeUtil';
+import './TimeLine.css';
 
 const Option = Select.Option;
 
@@ -35,12 +37,14 @@ class TimeLine extends Component {
         employee: this.props.detail.employee,
         start: this.props.detail.start,
         end: this.props.detail.end,
-        rest: this.props.detail.rest
+        rest: this.props.detail.rest,
+        isSupport: this.props.detail.isSupport
       }
     };
 
-    this.handleRestSelect = this.handleRestSelect.bind(this);
     this.handleEmployeeSelect = this.handleEmployeeSelect.bind(this);
+    this.handleRestSelect = this.handleRestSelect.bind(this);
+    this.handleSwitchChange = this.handleSwitchChange.bind(this);
     this.sliderTipFormatter = this.sliderTipFormatter.bind(this);
     this.handleSliderChange = this.handleSliderChange.bind(this);
     this.handleSliderAfterChange = this.handleSliderAfterChange.bind(this);
@@ -59,7 +63,8 @@ class TimeLine extends Component {
           employee: nextProps.detail.employee,
           start: nextProps.detail.start,
           end: nextProps.detail.end,
-          rest: nextProps.detail.rest
+          rest: nextProps.detail.rest,
+          isSupport: nextProps.detail.isSupport
         }
       });
     }
@@ -95,6 +100,17 @@ class TimeLine extends Component {
   handleRestSelect(rest) {
     const detail = this.state.detail;
     detail.rest = parseFloat(rest);
+    this.setState({ detail });
+    this._updateDetail(detail);
+  }
+
+  /**
+   * when the switch changes
+   * @param value
+   */
+  handleSwitchChange(value) {
+    const detail = this.state.detail;
+    detail.isSupport = value;
     this.setState({ detail });
     this._updateDetail(detail);
   }
@@ -148,7 +164,7 @@ class TimeLine extends Component {
 
   render() {
     return (
-      <Row type="flex" align="middle">
+      <Row>
         <Col span={8}>
           <Select
             style={{ width: 80 }}
@@ -168,6 +184,13 @@ class TimeLine extends Component {
             <Option value="1.5">-1.5h</Option>
             <Option value="2">-2h</Option>
           </Select>
+          <Switch
+            style={{ marginLeft: 4 }}
+            checked={this.state.detail.isSupport}
+            checkedChildren="支援"
+            unCheckedChildren="本店"
+            onChange={this.handleSwitchChange}
+          />
         </Col>
         <Col span={14}>
           <Slider
@@ -180,6 +203,7 @@ class TimeLine extends Component {
             tipFormatter={this.sliderTipFormatter}
             onChange={this.handleSliderChange}
             onAfterChange={this.handleSliderAfterChange}
+            {...this.state.detail.isSupport && {className: 'switch-support'}}
           />
         </Col>
         <Col span={2} style={{ textAlign: 'right' }}>

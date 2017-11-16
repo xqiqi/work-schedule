@@ -1,0 +1,9 @@
+.switch-support .ant-slider-track,
+.switch-support.ant-slider:hover .ant-slider-track {
+    background-color: #76d0a3;
+}
+
+.switch-support .ant-slider-handle,
+.switch-support.ant-slider:hover .ant-slider-handle {
+    border-color: #76d0a3;
+}
