@@ -2,6 +2,7 @@ import low from 'lowdb';
 import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
 import { Icon, Layout, Menu } from 'antd';
+import History from './History';
 import Start from './Start';
 import './App.css';
 
@@ -42,7 +43,31 @@ class App extends Component {
             { id: '2', name: '晚咖啡师', start: '13:30', end: '22:00' }
           ]
         }
-      ]
+      ],
+      current: {
+        step: 0,                                              // current step when planning
+        shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
+        startDate: '',                                        // schedule start date
+        workTime: {                                           // day work time
+          day1: {start: '08:00', end: '22:00'},
+          day2: {start: '08:00', end: '22:00'},
+          day3: {start: '08:00', end: '22:00'},
+          day4: {start: '08:00', end: '22:00'},
+          day5: {start: '08:00', end: '22:00'},
+          day6: {start: '08:00', end: '22:00'},
+          day7: {start: '08:00', end: '22:00'}
+        },
+        details: {                                            // day schedule detail
+          day1: [],
+          day2: [],
+          day3: [],
+          day4: [],
+          day5: [],
+          day6: [],
+          day7: []
+        },
+        sums: []                                              // total working time
+      }
     }).write();
   }
 
@@ -86,7 +111,7 @@ class App extends Component {
           {this.state.menuKey === 'start' && <Start />}
 
           {this.state.menuKey === 'chart' && <Layout className="main"><p>统计图表</p></Layout>}
-          {this.state.menuKey === 'history' && <Layout className="main"><p>历史记录</p></Layout>}
+          {this.state.menuKey === 'history' && <History />}
         </Layout>
       </div>
     );

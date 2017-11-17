@@ -32,34 +32,7 @@ class Start extends Component {
 
     // check the current saved information
     const current = db.get('current').value();
-    if (current) {
-      this.state = Object.assign({}, current);
-    } else {
-      this.state = {
-        step: 0,                                              // current step when planning
-        shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
-        startDate: '',                                        // schedule start date
-        workTime: {                                           // day work time
-          day1: {start: '08:00', end: '22:00'},
-          day2: {start: '08:00', end: '22:00'},
-          day3: {start: '08:00', end: '22:00'},
-          day4: {start: '08:00', end: '22:00'},
-          day5: {start: '08:00', end: '22:00'},
-          day6: {start: '08:00', end: '22:00'},
-          day7: {start: '08:00', end: '22:00'}
-        },
-        details: {                                            // day schedule detail
-          day1: [],
-          day2: [],
-          day3: [],
-          day4: [],
-          day5: [],
-          day6: [],
-          day7: []
-        },
-        sums: []                                              // total working time
-      };
-    }
+    this.state = Object.assign({}, current);
 
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
