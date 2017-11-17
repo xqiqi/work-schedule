@@ -5,6 +5,7 @@ import Button from 'antd/lib/button';
 import Col from 'antd/lib/col';
 import DatePicker from 'antd/lib/date-picker';
 import Layout from 'antd/lib/layout';
+import Modal from 'antd/lib/modal';
 import Row from 'antd/lib/row';
 import Select from 'antd/lib/select';
 import Steps from 'antd/lib/steps';
@@ -18,8 +19,9 @@ const adapter = new LocalStorage('schedule');
 const db = low(adapter);
 
 const { Content, Header } = Layout;
-const Step = Steps.Step;
+const confirm = Modal.confirm;
 const Option = Select.Option;
+const Step = Steps.Step;
 const aWeek = [1,2,3,4,5,6,7];
 
 message.config({ top: 130, duration: 2 });
@@ -27,30 +29,37 @@ message.config({ top: 130, duration: 2 });
 class Start extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      step: 0,                                              // current step when planning
-      shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
-      startDate: '',                                        // schedule start date
-      workTime: {                                           // day work time
-        day1: {start: '08:00', end: '22:00'},
-        day2: {start: '08:00', end: '22:00'},
-        day3: {start: '08:00', end: '22:00'},
-        day4: {start: '08:00', end: '22:00'},
-        day5: {start: '08:00', end: '22:00'},
-        day6: {start: '08:00', end: '22:00'},
-        day7: {start: '08:00', end: '22:00'}
-      },
-      details: {                                            // day schedule detail
-        day1: [],
-        day2: [],
-        day3: [],
-        day4: [],
-        day5: [],
-        day6: [],
-        day7: []
-      },
-      sums: []                                              // total working time
-    };
+
+    // check the current saved information
+    const current = db.get('current').value();
+    if (current) {
+      this.state = Object.assign({}, current);
+    } else {
+      this.state = {
+        step: 0,                                              // current step when planning
+        shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
+        startDate: '',                                        // schedule start date
+        workTime: {                                           // day work time
+          day1: {start: '08:00', end: '22:00'},
+          day2: {start: '08:00', end: '22:00'},
+          day3: {start: '08:00', end: '22:00'},
+          day4: {start: '08:00', end: '22:00'},
+          day5: {start: '08:00', end: '22:00'},
+          day6: {start: '08:00', end: '22:00'},
+          day7: {start: '08:00', end: '22:00'}
+        },
+        details: {                                            // day schedule detail
+          day1: [],
+          day2: [],
+          day3: [],
+          day4: [],
+          day5: [],
+          day6: [],
+          day7: []
+        },
+        sums: []                                              // total working time
+      };
+    }
 
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
@@ -61,8 +70,54 @@ class Start extends Component {
     this.updateDayDetails = this.updateDayDetails.bind(this);
   }
 
-  save() {}
-  reset() {}
+  /**
+   * update the current value in db
+   * @param value
+   * @private
+   */
+  _updateCurrent(value) {
+    const current = Object.assign({}, value);
+    db.set('current', current).write();
+  }
+
+  /**
+   * when the save button click
+   */
+  save() {
+    this._updateCurrent(this.state);
+    message.success('保存成功！');
+  }
+
+  /**
+   * when the reset button click
+   */
+  reset() {
+    confirm({
+      title: '是否确认进行重置？',
+      content: '重置后，本次已保存的排班信息将被清除，且无法恢复。',
+      onOk: () => {
+        const current = {
+          step: 0,
+          shop: { id: '', name: '', employees: [], plans: [] },
+          startDate: '',
+          workTime: {
+            day1: {start: '08:00', end: '22:00'},
+            day2: {start: '08:00', end: '22:00'},
+            day3: {start: '08:00', end: '22:00'},
+            day4: {start: '08:00', end: '22:00'},
+            day5: {start: '08:00', end: '22:00'},
+            day6: {start: '08:00', end: '22:00'},
+            day7: {start: '08:00', end: '22:00'}
+          },
+          details: { day1: [], day2: [], day3: [], day4: [], day5: [], day6: [], day7: [] },
+          sums: []
+        };
+        this.setState(current);
+        this._updateCurrent(current);
+        message.success('重置成功！');
+      }
+    });
+  }
 
   /**
    * when the next button click
