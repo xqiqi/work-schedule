@@ -1,7 +1,10 @@
 import low from 'lowdb';
 import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
-import { Icon, Layout, Menu } from 'antd';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import Icon from 'antd/lib/icon';
+import Layout from 'antd/lib/layout';
+import Menu from 'antd/lib/menu';
 import History from './History';
 import Start from './Start';
 import './App.css';
@@ -84,35 +87,40 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Layout>
-          <Sider className="sider">
-            <div className="logo" />
-            <Menu
-              theme="dark"
-              mode="inline"
-              selectedKeys={[this.state.menuKey]}
-              onClick={this.handleMenuClick}
-            >
-              <Menu.Item key="start">
-                <Icon type="edit" />
-                <span className="nav-text">开始计划</span>
-              </Menu.Item>
-              <Menu.Item key="chart">
-                <Icon type="bar-chart" />
-                <span className="nav-text">统计图表</span>
-              </Menu.Item>
-              <Menu.Item key="history">
-                <Icon type="schedule" />
-                <span className="nav-text">历史记录</span>
-              </Menu.Item>
-            </Menu>
-          </Sider>
+        <Router>
+          <Layout>
+            <Sider className="sider">
+              <div className="logo" />
+              <Menu
+                theme="dark"
+                mode="inline"
+                selectedKeys={[this.state.menuKey]}
+                onClick={this.handleMenuClick}
+              >
+                <Menu.Item key="start">
+                  <Link to="/">
+                    <Icon type="edit" />
+                    <span className="nav-text">开始计划</span>
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="chart">
+                  <Icon type="bar-chart" />
+                  <span className="nav-text">统计图表</span>
+                </Menu.Item>
+                <Menu.Item key="history">
+                  <Link to="/history">
+                    <Icon type="schedule" />
+                    <span className="nav-text">历史记录</span>
+                  </Link>
+                </Menu.Item>
+              </Menu>
+            </Sider>
 
-          {this.state.menuKey === 'start' && <Start />}
-
-          {this.state.menuKey === 'chart' && <Layout className="main"><p>统计图表</p></Layout>}
-          {this.state.menuKey === 'history' && <History />}
-        </Layout>
+            <Route exact path="/" component={() => <Start/>} />
+            <Route path="/chart" />
+            <Route path="/history" component={() => <History/>} />
+          </Layout>
+        </Router>
       </div>
     );
   }
