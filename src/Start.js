@@ -278,12 +278,12 @@ class Start extends Component {
 
     return (
       <Layout className="main">
-        <Header style={{ background: '#fff', textAlign: 'right', padding: '0 16px', borderBottom: '1px solid #eee' }}>
+        <Header className="header" style={{ background: '#fff', textAlign: 'right' }}>
           <Button type="primary" onClick={this.save}>保存</Button>
           <Button style={{ marginLeft: 16 }} onClick={this.reset}>重置</Button>
         </Header>
 
-        <Content style={{ margin: '24px 16px' }}>
+        <Content className="content">
           <Row>
             <Col span={18}>
               <Steps current={this.state.step}>

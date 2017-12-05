@@ -1,7 +1,10 @@
 import low from 'lowdb';
 import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
+import { Switch, Route, Link } from 'react-router-dom';
+import Button from 'antd/lib/button';
 import DatePicker from 'antd/lib/date-picker';
+import Icon from 'antd/lib/icon';
 import Layout from 'antd/lib/layout';
 import Select from 'antd/lib/select';
 import Table from 'antd/lib/table';
@@ -13,6 +16,7 @@ const db = low(adapter);
 const { Content, Header } = Layout;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
+const ButtonGroup = Button.Group;
 
 class History extends Component {
   constructor(props) {
@@ -110,18 +114,17 @@ class History extends Component {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a href="#">查看</a>
+          <Link to={`/history/${record.id}`}>查看</Link>
           <span className="ant-divider" />
-          <a href="#">修改</a>
+          <a href="#">编辑</a>
           <span className="ant-divider" />
           <a href="#">删除</a>
         </span>
-      ),
+      )
     }];
-
-    return (
+    const List = () => (
       <Layout className="main">
-        <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid #eee' }}>
+        <Header className="header" style={{ background: '#fff' }}>
           <Select
             allowClear
             showSearch
@@ -130,15 +133,48 @@ class History extends Component {
             optionFilterProp="children"
             onChange={this.handleShopSelect}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            {...this.state.filter.shop !== '' && {defaultValue: this.state.filter.shop }}
           >
             {db.get('shops').value().map(shop => <Option key={shop.id}>{shop.name}</Option>)}
           </Select>
-          <RangePicker style={{ marginLeft: 16 }} onChange={this.handleRangePick} />
+          <RangePicker
+            style={{ marginLeft: 16 }}
+            onChange={this.handleRangePick}
+            {...this.state.filter.startDateRange !== [] && {defaultValue: this.state.filter.startDateRange}}
+          />
         </Header>
-        <Content style={{ margin: '24px 16px' }}>
+        <Content className="content">
           <Table rowKey="id" columns={columns} dataSource={this.state.histories} />
         </Content>
       </Layout>
+    );
+
+    const Detail = ({ match }) => (
+      <Layout className="main">
+        <Header className="header" style={{ background: '#fff' }}>
+          <ButtonGroup>
+            <Button>
+              <Icon type="left" />
+            </Button>
+            <Button>
+              <Icon type="edit" />编辑
+            </Button>
+            <Button>
+              <Icon type="delete" />删除
+            </Button>
+          </ButtonGroup>
+        </Header>
+        <Content className="content">
+          {match.params.id}
+        </Content>
+      </Layout>
+    );
+
+    return (
+      <Switch>
+        <Route exact path="/history" component={List} />
+        <Route path={`/history/:id`} component={Detail} />
+      </Switch>
     );
   }
 }

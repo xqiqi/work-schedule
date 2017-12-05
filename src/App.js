@@ -17,11 +17,6 @@ const { Sider } = Layout;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      menuKey: 'start' // key navigation of the sider menu
-    };
-
-    this.handleMenuClick = this.handleMenuClick.bind(this);
 
     // init the database
     db.defaults({
@@ -74,28 +69,17 @@ class App extends Component {
     }).write();
   }
 
-  /**
-   * when the sider bar menu click
-   * @param e
-   */
-  handleMenuClick(e) {
-    this.setState({
-      menuKey: e.key
-    });
-  }
-
   render() {
     return (
-      <div className="App">
-        <Router>
+      <Router>
+        <div className="App">
           <Layout>
             <Sider className="sider">
               <div className="logo" />
               <Menu
                 theme="dark"
                 mode="inline"
-                selectedKeys={[this.state.menuKey]}
-                onClick={this.handleMenuClick}
+                defaultSelectedKeys={[window.location.pathname.split('/')[1]]}
               >
                 <Menu.Item key="start">
                   <Link to="/">
@@ -116,12 +100,13 @@ class App extends Component {
               </Menu>
             </Sider>
 
-            <Route exact path="/" component={() => <Start/>} />
+            <Route exact path="/" component={Start} />
             <Route path="/chart" />
-            <Route path="/history" component={() => <History/>} />
+            <Route path="/history" component={History} />
+
           </Layout>
-        </Router>
-      </div>
+        </div>
+      </Router>
     );
   }
 }

@@ -17,3 +17,12 @@
   background: #fff;
   margin-left: 200px;
 }
+
+.header {
+  padding: 0 16px;
+  border-bottom: 1px solid #eee
+}
+
+.content {
+  margin: 24px 16px;
+}
