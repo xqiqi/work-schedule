@@ -1,7 +1,13 @@
 # work schedule
 
-* lunch & dinner time
-* shop configuration
-* previous btn click when step = 3
+## Description
+Design for a cafe company. Shop managers can use this tool to generate weekly work schedule and monthly work attendance.
 
-* time line: add support option
+## Basic Functions
+* Weekly work schedule planning
+* Generate work sheets
+
+## doing...
+* shop configuration (employee/preset)
+* weekly work schedule preview
+* employee work schedule preview
