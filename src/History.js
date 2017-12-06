@@ -3,9 +3,9 @@ import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 import Button from 'antd/lib/button';
-import DatePicker from 'antd/lib/date-picker';
+import { RangePicker } from 'antd/lib/date-picker';
 import Icon from 'antd/lib/icon';
-import Layout from 'antd/lib/layout';
+import Layout, { Content, Header } from 'antd/lib/layout';
 import Select from 'antd/lib/select';
 import Table from 'antd/lib/table';
 import TimeUtil from './utils/timeUtil';
@@ -13,8 +13,6 @@ import TimeUtil from './utils/timeUtil';
 const adapter = new LocalStorage('schedule');
 const db = low(adapter);
 
-const { Content, Header } = Layout;
-const { RangePicker } = DatePicker;
 const Option = Select.Option;
 const ButtonGroup = Button.Group;
 
@@ -173,7 +171,7 @@ class History extends Component {
     return (
       <Switch>
         <Route exact path="/history" component={List} />
-        <Route path={`/history/:id`} component={Detail} />
+        <Route path="/history/:id" component={Detail} />
       </Switch>
     );
   }

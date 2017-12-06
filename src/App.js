@@ -3,7 +3,7 @@ import LocalStorage from 'lowdb/adapters/LocalStorage';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Icon from 'antd/lib/icon';
-import Layout from 'antd/lib/layout';
+import Layout, { Sider } from 'antd/lib/layout';
 import Menu from 'antd/lib/menu';
 import History from './History';
 import Start from './Start';
@@ -11,8 +11,6 @@ import './App.css';
 
 const adapter = new LocalStorage('schedule');
 const db = low(adapter);
-
-const { Sider } = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -79,7 +77,7 @@ class App extends Component {
               <Menu
                 theme="dark"
                 mode="inline"
-                defaultSelectedKeys={[window.location.pathname.split('/')[1]]}
+                defaultSelectedKeys={[window.location.pathname.split('/')[1] !== '' ? window.location.pathname.split('/')[1] : 'start']}
               >
                 <Menu.Item key="start">
                   <Link to="/">

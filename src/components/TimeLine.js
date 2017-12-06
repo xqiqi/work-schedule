@@ -174,7 +174,7 @@ class TimeLine extends Component {
             {this.props.employees.map(employee => <Option key={employee.id}>{employee.name}</Option>)}
           </Select>
           <Select
-            style={{ width: 60, marginLeft: 4 }}
+            style={{ width: 80, marginLeft: 4 }}
             value={this.state.detail.rest !== undefined ? this.state.detail.rest.toString() : '0.5'}
             onChange={this.handleRestSelect}
           >

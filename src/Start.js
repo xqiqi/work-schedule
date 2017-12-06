@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import Button from 'antd/lib/button';
 import Col from 'antd/lib/col';
 import DatePicker from 'antd/lib/date-picker';
-import Layout from 'antd/lib/layout';
+import Layout, { Content, Header } from 'antd/lib/layout';
 import Modal from 'antd/lib/modal';
 import Row from 'antd/lib/row';
 import Select from 'antd/lib/select';
@@ -18,7 +18,6 @@ import './Start.css';
 const adapter = new LocalStorage('schedule');
 const db = low(adapter);
 
-const { Content, Header } = Layout;
 const confirm = Modal.confirm;
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -232,7 +231,7 @@ class Start extends Component {
         <Row gutter={16}>
           {
             aWeek.map(i =>
-              <Col style={{ marginBottom: 16 }} key={i} span={8} md={6} xl={3}>
+              <Col style={{ marginBottom: 16 }} key={i} span={12} md={6} xl={4}>
                 <WorkTime
                   ref={'workTime' + i}
                   day={i}
