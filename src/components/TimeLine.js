@@ -33,13 +33,7 @@ class TimeLine extends Component {
 
     this.state = {
       marks: getSliderMarks(this.start, this.end, this.props.detail.start, this.props.detail.end),
-      detail: {
-        employee: this.props.detail.employee,
-        start: this.props.detail.start,
-        end: this.props.detail.end,
-        rest: this.props.detail.rest,
-        isSupport: this.props.detail.isSupport
-      }
+      detail: {...this.props.detail}
     };
 
     this.handleEmployeeSelect = this.handleEmployeeSelect.bind(this);
@@ -59,13 +53,7 @@ class TimeLine extends Component {
     if(JSON.stringify(this.props.detail) !== JSON.stringify(nextProps.detail)) {
       this.setState({
         marks: getSliderMarks(this.start, this.end, nextProps.detail.start, nextProps.detail.end),
-        detail: {
-          employee: nextProps.detail.employee,
-          start: nextProps.detail.start,
-          end: nextProps.detail.end,
-          rest: nextProps.detail.rest,
-          isSupport: nextProps.detail.isSupport
-        }
+        detail: {...nextProps.detail}
       });
     }
   }

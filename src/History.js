@@ -47,7 +47,7 @@ class History extends Component {
         shop: '',
         startDateRange: []
       },
-      histories: Array.from(this.histories)
+      histories: [...this.histories]
     };
 
     this.handleShopSelect = this.handleShopSelect.bind(this);
