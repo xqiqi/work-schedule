@@ -31,7 +31,7 @@ class Start extends Component {
 
     // check the current saved information
     const current = db.get('current').value();
-    this.state = Object.assign({}, current);
+    this.state = {...current};
 
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
@@ -48,7 +48,7 @@ class Start extends Component {
    * @private
    */
   _updateCurrent(value) {
-    const current = Object.assign({}, value);
+    const current = {...value};
     db.set('current', current).write();
   }
 
