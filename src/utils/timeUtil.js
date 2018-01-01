@@ -11,6 +11,7 @@ const timeUtil = {
    * @returns {*|moment.Moment}
    */
   parseDateStrToMoment(str) {
+    if (str === '') return null;
     return moment(str, this.dateFormat);
   },
   /**
