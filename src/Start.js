@@ -1,5 +1,6 @@
 import low from 'lowdb';
 import LocalStorage from 'lowdb/adapters/LocalStorage';
+import shortid from 'shortid';
 import React, { Component } from 'react';
 import Button from 'antd/lib/button';
 import Col from 'antd/lib/col';
@@ -34,6 +35,7 @@ class Start extends Component {
     this.reset = this.reset.bind(this);
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
+    this.saveToHistory = this.saveToHistory.bind(this);
     this.handleShopSelect = this.handleShopSelect.bind(this);
     this.handleDatePick = this.handleDatePick.bind(this);
     this.updateDayDetails = this.updateDayDetails.bind(this);
@@ -135,6 +137,52 @@ class Start extends Component {
   prev() {
     const step = this.state.step - 1;
     this.setState({ step });
+  }
+
+  /**
+   * when the save and preview button click
+   */
+  saveToHistory() {
+    this.save();
+
+    // save to history
+    const history = {...db.get('current').value()};
+    history.id = shortid.generate();
+    history.lastModified = (new Date()).toISOString();
+    history.step = 0; // set the step to the initial value
+    db.get('histories')
+      .push(history)
+      .write();
+
+    // clean current
+    const current = {
+      step: 0,                                              // current step when planning
+      shop: { id: '', name: '', employees: [], plans: [] }, // current edit shop
+      startDate: '',                                        // schedule start date
+      workTime: {                                           // day work time
+        day1: {start: '08:00', end: '22:00'},
+        day2: {start: '08:00', end: '22:00'},
+        day3: {start: '08:00', end: '22:00'},
+        day4: {start: '08:00', end: '22:00'},
+        day5: {start: '08:00', end: '22:00'},
+        day6: {start: '08:00', end: '22:00'},
+        day7: {start: '08:00', end: '22:00'}
+      },
+      details: {                                            // day schedule detail
+        day1: [],
+        day2: [],
+        day3: [],
+        day4: [],
+        day5: [],
+        day6: [],
+        day7: []
+      },
+      sums: []                                              // total working time
+    };
+    this.setState({ current });
+    this._updateCurrent(current);
+
+    // redirect to the new page
   }
 
   /**
@@ -295,7 +343,7 @@ class Start extends Component {
                 {
                   this.state.step === steps.length - 1
                   &&
-                  <Button type="primary">保存并预览</Button>
+                  <Button type="primary" onClick={this.saveToHistory}>保存并预览</Button>
                 }
                 {
                   this.state.step > 0

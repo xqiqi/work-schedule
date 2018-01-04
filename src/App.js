@@ -64,7 +64,8 @@ class App extends Component {
           day7: []
         },
         sums: []                                              // total working time
-      }
+      },
+      histories: []
     }).write();
   }
 

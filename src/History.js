@@ -20,26 +20,7 @@ class History extends Component {
   constructor(props) {
     super(props);
 
-    this.histories = [
-      { id: 1, shop: { id: '1', name: '上海愚园路店' }, startDate: '2017/11/20', lastModified: '2017/11/19 22:00:00' },
-      { id: 2, shop: { id: '1', name: '上海愚园路店' }, startDate: '2017/11/13', lastModified: '2017/11/12 22:00:00' },
-      { id: 3, shop: { id: '1', name: '上海愚园路店' }, startDate: '2017/11/06', lastModified: '2017/11/13 22:00:00' },
-      { id: 4, shop: { id: '2', name: '上海淮海755店' }, startDate: '2017/11/20', lastModified: '2017/11/22 22:00:00' },
-      { id: 5, shop: { id: '2', name: '上海淮海755店' }, startDate: '2017/11/13', lastModified: '2017/11/11 22:00:00' },
-      { id: 6, shop: { id: '2', name: '上海淮海755店' }, startDate: '2017/11/06', lastModified: '2017/11/05 22:00:00' },
-      { id: 7, shop: { id: '3', name: '上海世博源店' }, startDate: '2017/11/20', lastModified: '2017/11/20 22:00:00' },
-      { id: 8, shop: { id: '3', name: '上海世博源店' }, startDate: '2017/11/13', lastModified: '2017/11/11 22:00:00' },
-      { id: 9, shop: { id: '3', name: '上海世博源店' }, startDate: '2017/11/06', lastModified: '2017/11/01 22:00:00' },
-      { id: 10, shop: { id: '1', name: '上海愚园路店' }, startDate: '2017/11/20', lastModified: '2017/11/09 22:00:00' },
-      { id: 11, shop: { id: '1', name: '上海愚园路店' }, startDate: '2017/11/13', lastModified: '2017/11/10 22:00:00' },
-      { id: 12, shop: { id: '1', name: '上海愚园路店' }, startDate: '2017/11/06', lastModified: '2017/11/03 22:00:00' },
-      { id: 13, shop: { id: '2', name: '上海淮海755店' }, startDate: '2017/11/20', lastModified: '2017/11/21 22:00:00' },
-      { id: 14, shop: { id: '2', name: '上海淮海755店' }, startDate: '2017/11/13', lastModified: '2017/11/15 22:00:00' },
-      { id: 15, shop: { id: '2', name: '上海淮海755店' }, startDate: '2017/11/06', lastModified: '2017/11/08 22:00:00' },
-      { id: 16, shop: { id: '3', name: '上海世博源店' }, startDate: '2017/11/20', lastModified: '2017/11/12 22:00:00' },
-      { id: 17, shop: { id: '3', name: '上海世博源店' }, startDate: '2017/11/13', lastModified: '2017/11/12 22:00:00' },
-      { id: 18, shop: { id: '3', name: '上海世博源店' }, startDate: '2017/11/06', lastModified: '2017/11/06 22:00:00' }
-    ];
+    this.histories = db.get('histories').value();
     this.histories.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
 
     this.state = {
