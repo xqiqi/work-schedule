@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Icon from 'antd/lib/icon';
 import Layout, { Sider } from 'antd/lib/layout';
 import Menu from 'antd/lib/menu';
+import Chart from './Chart';
 import History from './History';
 import Start from './Start';
 import './App.css';
@@ -86,8 +87,10 @@ class App extends Component {
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="chart">
-                  <Icon type="bar-chart" />
-                  <span className="nav-text">统计图表</span>
+                  <Link to="/chart">
+                    <Icon type="bar-chart" />
+                    <span className="nav-text">统计图表</span>
+                  </Link>
                 </Menu.Item>
                 <Menu.Item key="history">
                   <Link to="/history">
@@ -99,7 +102,7 @@ class App extends Component {
             </Sider>
 
             <Route exact path="/" component={Start} />
-            <Route path="/chart" />
+            <Route path="/chart" component={Chart} />
             <Route path="/history" component={History} />
 
           </Layout>

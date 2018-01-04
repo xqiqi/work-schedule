@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import Button from 'antd/lib/button';
 import Col from 'antd/lib/col';
 import Row from 'antd/lib/row';
-import Select from 'antd/lib/select';
+import Select, { Option } from 'antd/lib/select';
 import Switch from 'antd/lib/switch';
 import Slider from 'antd/lib/slider';
 import TimeUtil from '../utils/timeUtil';
 import './TimeLine.css';
-
-const Option = Select.Option;
 
 /**
  * get the slider marks

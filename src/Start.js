@@ -5,10 +5,10 @@ import Button from 'antd/lib/button';
 import Col from 'antd/lib/col';
 import DatePicker from 'antd/lib/date-picker';
 import Layout, { Content, Header } from 'antd/lib/layout';
-import Modal from 'antd/lib/modal';
+import { confirm } from 'antd/lib/modal';
 import Row from 'antd/lib/row';
-import Select from 'antd/lib/select';
-import Steps from 'antd/lib/steps';
+import Select, { Option } from 'antd/lib/select';
+import Steps, { Step } from 'antd/lib/steps';
 import message from 'antd/lib/message';
 import DayPlan from './components/DayPlan';
 import WorkTime from './components/WorkTime';
@@ -18,9 +18,6 @@ import './Start.css';
 const adapter = new LocalStorage('schedule');
 const db = low(adapter);
 
-const confirm = Modal.confirm;
-const Option = Select.Option;
-const Step = Steps.Step;
 const aWeek = [1,2,3,4,5,6,7];
 
 message.config({ top: 130, duration: 2 });
